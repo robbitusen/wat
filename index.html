@@ -30,12 +30,12 @@
 			/* Init vars */
 			var canvas = document.getElementById("wat");
 			var ctx = canvas.getContext("2d");
-			var fps = 50;
+			var fps = 25;
 			var entities = [];
 			var cursorX = 0;
 			var cursorY = 0;
 			var sound = new Howl({
-			  urls: ['wat.wav'],
+			  urls: ['wat.mp3'],
 			  loop: true
 			});
 
@@ -68,61 +68,68 @@
 				}
 			};
 
-			function createSquare(e) {
-				entities.push(new Square(e));
+			function createSquare() {
+				entities.push(new Square());
 				console.log(entities); //SHOW ME EVERYONE EVER PLZ. I AM BIG BROTHER BUT NOT QUITE BECAUSE THESE ARE SQUARES AND NOT OPRESSED PEOPLE 
 			};
 
 			/* Events */
 			window.addEventListener("mousemove", function(e) {
-				cursorX = e.clientX;
+				cursorX = e.clientX; //Set cursor position to global var
 				cursorY = e.clientY;
 			});
 
 			window.addEventListener("click", function(e) {
-				createSquare(e);
+				createSquare();
+			});
+
+			window.addEventListener("mousedown", function(e) {
+				createSquare();
 			});
 
 			window.addEventListener("keydown", function(e) {
-				console.log(e);
-				createSquare(e);
+				createSquare();
 			});
 
 			/* Square obj */
-			function Square(e){
+			function Square(){
+
 				this.x = cursorX; //starting position = current cursor position
 				this.y = cursorY;
 				this.width = (Math.floor(Math.random() * (100 - 40) + 40));
 				this.height = (Math.floor(Math.random() * (100 - 40) + 40));
-
-				if ((Math.floor(Math.random() * 2)) == 1) {
-					this.acc = -0.5;
-				} else {
-					this.acc = 0.5;
-				}
-				
 				this.vel = 0;
 				this.id = entities.length + 1;
+
+				//Set acceleration direction (up / down)
+				if ((Math.floor(Math.random() * 2)) == 1) {
+					this.acc = -(Math.random());
+				} else {
+					this.acc = (Math.random());
+				}
+				
 			};
 
 			Square.prototype.update = function() {
+
 				this.vel += this.acc;
 				this.y += this.vel;
 
-				// Remove from entities if out of view
+				//Remove from entities if out of view
 				if (this.y > window.innerHeight) {
 					//Actually write the function out m8 u wot u wot
 				}
+
 			};
 
 			Square.prototype.draw = function() {
-				console.log;
 				ctx.fillStyle = "rgb(" + (Math.floor(Math.random() * 254)) + "," +  + (Math.floor(Math.random() * 254)) + ", 255)";
 				ctx.fillRect(this.x - ( this.width / 2 ), this.y - ( this.height / 2 ), this.width, this.height);
 			};
 
 			/* Run */
 			window.addEventListener("load", scaleCanvasSize);
+			window.addEventListener("resize", scaleCanvasSize);
 			sound.play();
 			setInterval( function() {
 		    	run();
